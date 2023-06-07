@@ -1,32 +1,28 @@
-import java.util.*;
+
 public class Trajectory {
     double g;   // vary the value of g to vary the interaction
 
-    double[] calc(Body t[], int i) // i is target body j is index for other body
+    Body [] calc(Body t[]) // i is target body j is index for other body
     {
-        double[] netacc = new double[2]; // store net accelaration
-        double[] calcacc = new double[2]; // store acceleration wrt to one body temp
-        for (int j=0; j<t.length;j++) {
-            if (j==i)   // to avoid calculation of force with itslef
-            {
-                continue;
-            }
-            calcacc = forcexy(t[i].mass, t[j].mass, t[j].posx - t[i].posx, t[j].posy - t[i].posy);
-            netacc[0] = netacc[0] + calcacc[0]; //calculating net force
-            netacc[1] = netacc[1] + calcacc[1];
+        double [] calcacc = new double [2];
+        Body com = new Body();
+        for (int i=0;i<t.length;i++) {
+            com=com(t, i);
+            calcacc=forcexy(t[i].mass,com.mass,com.posx-t[i].posx,com.posy-t[i].posy);
+            t[i].accx=calcacc[0];
+            t[i].accx=calcacc[1];
+            t[i].accx = t[i].accx / t[i].mass; // calculate net acc
+            t[i].accy = t[i].accy / t[i].mass;
         }
-        netacc[0]=netacc[0]/t[i].mass; // calculate net acc
-        netacc[1]=netacc[1]/t[i].mass;
-        return netacc;
-
+            return t;
     }
-    double force(double m1, double m2, double x, double y)
+    private double force(double m1, double m2, double x, double y)
     {
         double r=(x*x+y*y); //r is r2
         double f = (g*m1*m2)/r; //r is rs so no squareroot
         return f; // net force
     }
-    double[] forcexy(double m1, double m2, double x, double y) // calculate force on each dimension and return array
+    private double[] forcexy(double m1, double m2, double x, double y) // calculate force on each dimension and return array
     {                                                           // o is x axis 1 is y axis
         double fxy[] = new double[2];
         if (x==0)       // when a body is directly on y axis wrt to target body
@@ -59,5 +55,34 @@ public class Trajectory {
         fxy[0] = Math.cos(theta)*force(m1, m2 ,x, y);   //force in x axis
         fxy[1]= Math.sin(theta)*force(m1, m2, x, y);    //force in y axis
         return fxy;
+    }
+    private Body com (Body t[], int j)
+    {
+        Body b = new Body();
+        for (int i=0; i<t.length; i++)
+        {
+            if (i==j)
+            {
+                continue;
+            }
+            b.mass=b.mass+t[i].mass;
+            b.posx= b.posx+(t[i].posx*t[i].mass);
+            b.posy= b.posy+(t[i].posy*t[i].mass);
+            b.posx=b.posx/b.mass;
+            b.posy=b.posy/b.mass;
+        }
+        return b;
+    }
+    void displacement(Body t[])
+    {
+        double time =0.01;
+        for(int i=0; i<=t.length;i++)
+        {
+
+            t[i].posx=t[i].posx+(t[i].velx*time+((0.5*t[i].accx)*time*time));
+            t[i].velx=t[i].velx+t[i].accx*time;
+            t[i].posy=t[i].posy+(t[i].vely*time+(0.5*t[i].accy*time*time));
+            t[i].vely=t[i].vely+t[i].accy*time;
+        }
     }
 }

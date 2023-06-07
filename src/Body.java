@@ -6,6 +6,14 @@ public class Body {
     double accx;
     double accy;
     double mass;
-    double jerkx;
-    double jerky;
+Body()
+{
+    posx=((Math.random()-0.5)*60);
+    posy=((Math.random()-0.5)*60);
+    velx=((Math.random()-0.5)*10);
+    vely=((Math.random()-0.5)*10);
+    mass=10;
+
 }
+}
+
