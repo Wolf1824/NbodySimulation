@@ -2,7 +2,7 @@
 public class Trajectory {
     double g;   // vary the value of g to vary the interaction
 
-    Body [] calc(Body t[]) // i is target body j is index for other body
+    void calc(Body t[]) // i is target body j is index for other body
     {
         double [] calcacc = new double [2];
         Body com = new Body();
@@ -10,11 +10,11 @@ public class Trajectory {
             com=com(t, i);
             calcacc=forcexy(t[i].mass,com.mass,com.posx-t[i].posx,com.posy-t[i].posy);
             t[i].accx=calcacc[0];
-            t[i].accx=calcacc[1];
+            t[i].accy=calcacc[1];
             t[i].accx = t[i].accx / t[i].mass; // calculate net acc
             t[i].accy = t[i].accy / t[i].mass;
         }
-            return t;
+
     }
     private double force(double m1, double m2, double x, double y)
     {
@@ -76,13 +76,37 @@ public class Trajectory {
     void displacement(Body t[])
     {
         double time =0.01;
-        for(int i=0; i<=t.length;i++)
+        for(int i=0; i<t.length;i++)
         {
 
             t[i].posx=t[i].posx+(t[i].velx*time+((0.5*t[i].accx)*time*time));
             t[i].velx=t[i].velx+t[i].accx*time;
             t[i].posy=t[i].posy+(t[i].vely*time+(0.5*t[i].accy*time*time));
             t[i].vely=t[i].vely+t[i].accy*time;
+        }
+    }
+    void collider(Body t[])
+    {
+        for(int j=0;j<t.length;j++)
+        {
+            if(t[j].posy>500)
+            {
+
+
+            }
+            if(t[j].posx>500)
+            {
+
+            }
+            if(t[j].posy<(-500))
+            {
+
+            }
+            if(t[j].posx<(-500))
+            {
+
+            }
+
         }
     }
 }

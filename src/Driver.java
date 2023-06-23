@@ -3,6 +3,6 @@ public class Driver {
     {
         Tracker tr = new Tracker();
         Thread t= new Thread(tr);
-        t.run();
+        t.start();
     }
 }
